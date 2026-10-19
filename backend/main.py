@@ -135,7 +135,6 @@ async def vapi_webhook(request: Request):
 
     logger.info(f"Vapi webhook payload received: {json.dumps(body, indent=2)}")
 
-    # Vapi sends { message: { type: ..., status: ..., transcript: ..., call: { id: ... } } }
     message = body.get("message", body)
     msg_type = message.get("type", "")
     call_obj = message.get("call") or body.get("call") or {}
@@ -162,7 +161,27 @@ async def vapi_webhook(request: Request):
         logger.info(f"Updated lead call_id={call_id} to status={mapped_status} from status-update={raw_status}")
 
     elif msg_type == "end-of-call-report":
-        transcript = message.get("transcript") or message.get("summary") or "Call completed (No transcript returned)."
+        # Clean transcript processing to extract structured conversation turns
+        transcript_raw = message.get("transcript")
+        if not transcript_raw and "artifact" in message:
+            transcript_raw = message["artifact"].get("transcript")
+            
+        if isinstance(transcript_raw, list):
+            clean_lines = []
+            seen = set()
+            for turn in transcript_raw:
+                role = turn.get("role", "")
+                text = turn.get("message") or turn.get("content", "")
+                if text:
+                    speaker = "Maya (Store AI)" if role in ["assistant", "bot"] else "rohith"
+                    line = f"{speaker}: {text.strip()}"
+                    if line not in seen:
+                        seen.add(line)
+                        clean_lines.append(line)
+            transcript = "\n".join(clean_lines) if clean_lines else "Call completed (No transcript returned)."
+        else:
+            transcript = transcript_raw or message.get("summary") or "Call completed (No transcript returned)."
+
         ended_reason = message.get("endedReason", "")
         status_to_set = "Completed"
         if "fail" in ended_reason.lower() or "error" in ended_reason.lower():
