@@ -46,9 +46,9 @@ async def trigger_outbound_call(lead: Dict[str, Any]) -> Tuple[bool, str, Dict[s
         )
 
     # Bulletproof Trial Fix: Force route outbound PSTN calls to the pre-verified 
-    # test lead phone number (+918123039379) to bypass Twilio trial carrier blocking 
+    # test lead phone number (+916361710702) to bypass Twilio trial carrier blocking 
     # on unverified/international destination numbers.
-    verified_test_lead = os.getenv("TEST_LEAD_PHONE", "+918123039379").strip()
+    verified_test_lead = os.getenv("TEST_LEAD_PHONE", "+916361710702").strip()
     raw_phone = verified_test_lead
 
     customer_name = lead.get("customer_name", "Valued Customer")
