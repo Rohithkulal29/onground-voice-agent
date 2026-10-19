@@ -122,7 +122,7 @@ async def start_outbound_call(payload: OutboundCallRequest):
         "vapi_response": raw_response
     }
 
-@app.post("/api/webhooks/vapi")
+@app.post("/api/webhook/vapi")
 async def vapi_webhook(request: Request):
     """
     Receives webhook events from Vapi (e.g. status-update, end-of-call-report)
