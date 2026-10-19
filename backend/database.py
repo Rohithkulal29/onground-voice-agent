@@ -29,14 +29,17 @@ def init_db():
     """)
     conn.commit()
 
-    # Pre-seed database with 2 sample retail store leads if table is empty
+    # Pre-seed database with sample retail store leads if table is empty
     cursor.execute("SELECT COUNT(*) FROM leads")
     count = cursor.fetchone()[0]
     if count == 0:
+        # Dynamically load test lead phone from environment variable, falling back to default
+        test_lead_phone = os.getenv("TEST_LEAD_PHONE", "+919876543210")
+        
         sample_leads = [
             (
                 "Rajesh Sharma",
-                "+919876543210",
+                test_lead_phone,
                 "Rajajinagar Flagship",
                 "Exclusive VIP Preview: 25% Off Festive Kurtas & Ethnic Wear + Free Tailoring",
                 "Pending",
