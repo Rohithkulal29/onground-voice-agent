@@ -59,17 +59,6 @@ async def trigger_outbound_call(lead: Dict[str, Any]) -> Tuple[bool, str, Dict[s
         f"I'm reaching out with an exclusive promotion: {campaign_offer}. Do you have a brief moment?"
     )
 
-    system_prompt = (
-        f"You are Maya, an energetic, friendly, and professional voice AI marketing specialist for On-Ground Retail at {store_branch}. "
-        f"You are speaking with {customer_name}. The promotional campaign is: '{campaign_offer}'. "
-        f"Key guidelines:\n"
-        f"1. Explain the offer clearly and concisely.\n"
-        f"2. Mention the offer is valid this week at the {store_branch} branch.\n"
-        f"3. Answer any questions regarding store hours (10 AM to 9:30 PM), location, or offer redemption.\n"
-        f"4. Warmly invite {customer_name} to visit or confirm if they'd like an SMS voucher sent.\n"
-        f"5. Keep responses concise, warm, and natural for voice conversation."
-    )
-
     payload = {
         "phoneNumberId": phone_number_id,
         "assistantId": assistant_id,
@@ -83,14 +72,6 @@ async def trigger_outbound_call(lead: Dict[str, Any]) -> Tuple[bool, str, Dict[s
                 "customer_name": customer_name,
                 "store_branch": store_branch,
                 "campaign_offer": campaign_offer
-            },
-            "model": {
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": system_prompt
-                    }
-                ]
             }
         }
     }
